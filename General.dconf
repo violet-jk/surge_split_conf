@@ -1,0 +1,41 @@
+# =====================================================================
+#  General.dconf  ——  共享通用设置（iOS / macOS 通用键）
+# ---------------------------------------------------------------------
+#  · 主配置用「单独一行 #!include General.dconf」引用时，此段在 UI 中仍可编辑，
+#    修改会写回本文件，所有引用它的配置同步生效。
+#  · 只放双端通用的键；平台专属键见文末说明。
+# =====================================================================
+
+[General]
+loglevel = notify
+
+# ---------------- DNS ----------------
+dns-server = 223.5.5.5, 119.29.29.29, system
+# 需要加密 DNS 时取消注释（配置后传统 DNS 仅用于连通性测试和解析 DoH 域名）
+# encrypted-dns-server = https://223.5.5.5/dns-query, https://doh.pub/dns-query
+hijack-dns = 8.8.8.8:53, 8.8.4.4:53
+ipv6 = false
+
+# 这些域名返回真实 IP 而非 Fake IP（游戏主机 NAT、STUN、系统连通性检测等）
+always-real-ip = *.srv.nintendo.net, *.stun.playstation.net, xbox.*.microsoft.com, *.xboxlive.com, *.msftncsi.com, *.msftconnecttest.com, stun.*.*, *.lan, *.local, localhost.ptlogin2.qq.com
+
+# ---------------- 绕过 ----------------
+skip-proxy = 127.0.0.1, 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12, 100.64.0.0/10, 17.0.0.0/8, localhost, *.local, captive.apple.com
+exclude-simple-hostnames = true
+
+# ---------------- 测速 ----------------
+internet-test-url = http://www.apple.com/library/test/success.html
+proxy-test-url = http://cp.cloudflare.com/generate_204
+test-timeout = 5
+
+# ---------------- 流量处理 ----------------
+# 节点不支持 UDP 时拒绝（默认值，写出来是为了明确不泄漏）
+udp-policy-not-supported-behaviour = REJECT
+
+# ---------------------------------------------------------------------
+#  平台专属键（如 Mac 的 http-listen / socks5-listen，iOS 的 allow-wifi-access）
+#  方案 A：行尾加 #!MACOS-ONLY / #!IOS-ONLY，例如
+#            http-listen = 0.0.0.0:6152 #!MACOS-ONLY
+#          注意：在 UI 中修改 [General] 后，这类条件标记会丢失。
+#  方案 B：拆成 General-iOS.dconf / General-Mac.dconf，各端主配置分别引用。
+# ---------------------------------------------------------------------
