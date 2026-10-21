@@ -1,0 +1,5 @@
+# 含 MITM CA 私钥（ca-p12 / ca-passphrase）
+MITM.conf
+
+# 本地留存的机场订阅（含节点地址与密码）
+Sub-*.conf
