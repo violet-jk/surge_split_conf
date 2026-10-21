@@ -1,0 +1,36 @@
+name: Build Managed.conf
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - General.conf
+      - ProxyGroup.conf
+      - Rule.conf
+      - scripts/build_managed.py
+      - .github/workflows/build-managed.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Merge shared sections into Managed.conf
+        run: python3 scripts/build_managed.py
+
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- Managed.conf && git ls-files --error-unmatch Managed.conf >/dev/null 2>&1; then
+            echo "Managed.conf is up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Managed.conf
+          git commit -m "Rebuild Managed.conf"
+          git push
